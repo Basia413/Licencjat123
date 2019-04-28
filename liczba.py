@@ -3,14 +3,15 @@ class Liczba:
         self.number = number
         self.number_binary = bin(number)[2:]
         self.number_of_bits = bitsf(self.number_binary)
+        self.status="none"
 
-    #     self.status=0
-    # @property
-    # def status(self):
-    #     return self.status
-    # @status.setter
-    # def status(self, new_one):
-    #     self.status = new_one
+
+    @property
+    def status(self):
+        return self.status
+    @status.setter
+    def status(self, new_one):
+        self.status = new_one
     def __eq__(self, other):
         return self.number_of_bits == other.number_of_bits
 
