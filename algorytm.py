@@ -40,6 +40,7 @@ def pary(list1, list2):
 def podzial_zal_num_bit(lista, N):
     j=0
     M = len(lista)
+    lista = sorted(lista)
     lista_list=[]
     for k in range(0,N):
         listat=[]
