@@ -1,5 +1,5 @@
 from liczba import Liczba
-
+from grupy import Grupa
 print(2 ** 3)
 for i in range(0, 8):
     print(i)
@@ -13,4 +13,12 @@ for i in l:
     print(i)
 for i in sorted(l):
     print(i)
-# l.uzupelnij(6)
+# l.uzupelnij(6)\
+slowo ="Barbara"
+print(slowo[:2]+"*"+slowo[3:])
+k=str(1010)
+
+s=Grupa("11-0",[l[1]])
+t=Grupa("11_0", l[3:5])
+s+=t
+print(s)
