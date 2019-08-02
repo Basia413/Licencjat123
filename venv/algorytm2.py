@@ -5,6 +5,7 @@ N=5
 lista_good=[1,2,3,5,7,8]
 lista_indiffrent =[19,18,17,0,16]
 wyniki = []
+lista_dif=[]
 zmiana = True
 #
 def wyswietl(number_list):
@@ -36,7 +37,25 @@ def pary(list1, list2):
                 if b!=-1:
                     tym=Grupa(b,[i,j])
                     wyniki.append(tym)
+                    # if i in list_dif:
+                    #     list_dif.remove(i.number)
+                    # if j in list_dif:
+                    #     list_dif.remove(j.number)
 
+def add_to_lista_dif(temlista):
+    global lista_dif
+    #print(type(temlista))
+    if type(temlista) is int:
+        #print("weszo")
+        lista_dif.append(temlista)
+    # elif type(temlista) is not list and type(temlista.number) is list:
+    #     for i in temlista.number:
+    #         print("akuku")
+    #         add_to_lista_dif(i.number)
+    elif type(temlista) is list:
+        for i in temlista:
+            #print("what the hell")
+            add_to_lista_dif(i.number)
 
 def podzial_zal_num_bit(lista):
     j=0
@@ -50,7 +69,7 @@ def podzial_zal_num_bit(lista):
         lista_list.append(listat)
     return lista_list
 def First_loop():
-    global wyniki
+    global wyniki, lista_dif
     lista=[]
     for i in lista_good+lista_indiffrent:
         lista.append(Liczba(int(i)).uzupelnij(N))
@@ -58,9 +77,19 @@ def First_loop():
     lista = podzial_zal_num_bit(lista)
     for i in range(0,len(lista)-1):
         pary(lista[i],lista[i+1])
+    for i in wyniki:
+        add_to_lista_dif(i.number)
+    lista_dif=list(dict.fromkeys(lista_dif))
+    for j in lista:
+        print(j.number)
+        if j.number not in lista_dif:
+            wyniki.append(j)
+    print(lista_dif)
     wyswietl(wyniki)
+    lista_dif.clear()
+
 def Next_loop():
-    global wyniki, zmiana
+    global wyniki, zmiana, lista_dif
     lista = wyniki
     wyniki=[]
     lista = podzial_zal_num_bit(lista)
@@ -69,7 +98,11 @@ def Next_loop():
     if (len(wyniki)==0):
         zmiana=False
     wyswietl(wyniki)
-
+    for i in wyniki:
+        add_to_lista_dif(i.number)
+    lista_dif = list(dict.fromkeys(lista_dif))
+    print(lista_dif)
+    lista_dif.clear()
 def Algo():
     First_loop()
     while(zmiana):

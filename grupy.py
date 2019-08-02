@@ -1,17 +1,17 @@
 class Grupa:
     def __init__(self,strin,lis):
         self.number_binary=strin
-        self.lista=lis
+        self.number=lis
         self.number_of_true_bits=self.bitstrue()
     def __eq__(self, other):
-        return self.number_binary==other.kombinacja_bina
+        return self.number_binary==other.number_binary
     def __add__(self, other):
-        for i in other.lista:
-            self.lista.append(i)
+        for i in other.number:
+            self.number.append(i)
         return self
     def __str__(self):
         tym=""
-        for j in self.lista:
+        for j in self.number:
             tym+=str(j)+" "
         return tym# + ":"+ str(self.number_binary)
 
