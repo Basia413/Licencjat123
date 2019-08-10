@@ -1,5 +1,6 @@
 from liczba import Liczba
 from grupy import Grupa
+import numpy as np
 print(2 ** 3)
 # for i in range(0, 8):
 #     print(i)
@@ -23,4 +24,5 @@ t=Grupa("11_0", l[3:5])
 # s+=t
 # k=t.number
 t=[[1,3],[2,6]]
-print(type(t))
+print(np.reshape(t, np.size(t)))
+

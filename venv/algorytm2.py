@@ -1,11 +1,12 @@
 from liczba import Liczba
 from grupy import Grupa
+import numpy as np
 #beda globalne (osobny plik):
-N=5
-lista_good=[1,2,3,5,7,8]
-lista_indiffrent =[19,18,17,0,16]
+N=4
+lista_good=[0, 1, 4, 6, 8, 12, 14]
+lista_indiffrent =[5, 10, 13, 15]
 wyniki = []
-lista_dif=[]
+l_end = []
 zmiana = True
 #
 def wyswietl(number_list):
@@ -35,27 +36,10 @@ def pary(list1, list2):
             for j in list2:
                 b=dif_of_one_bit(i.number_binary, j.number_binary)
                 if b!=-1:
-                    tym=Grupa(b,[i,j])
+                    i.used()
+                    j.used()
+                    tym=Grupa(b,[i.number,j.number])
                     wyniki.append(tym)
-                    # if i in list_dif:
-                    #     list_dif.remove(i.number)
-                    # if j in list_dif:
-                    #     list_dif.remove(j.number)
-
-def add_to_lista_dif(temlista):
-    global lista_dif
-    #print(type(temlista))
-    if type(temlista) is int:
-        #print("weszo")
-        lista_dif.append(temlista)
-    # elif type(temlista) is not list and type(temlista.number) is list:
-    #     for i in temlista.number:
-    #         print("akuku")
-    #         add_to_lista_dif(i.number)
-    elif type(temlista) is list:
-        for i in temlista:
-            #print("what the hell")
-            add_to_lista_dif(i.number)
 
 def podzial_zal_num_bit(lista):
     j=0
@@ -68,8 +52,9 @@ def podzial_zal_num_bit(lista):
             j+=1
         lista_list.append(listat)
     return lista_list
+
 def First_loop():
-    global wyniki, lista_dif
+    global wyniki, l_end
     lista=[]
     for i in lista_good+lista_indiffrent:
         lista.append(Liczba(int(i)).uzupelnij(N))
@@ -77,19 +62,15 @@ def First_loop():
     lista = podzial_zal_num_bit(lista)
     for i in range(0,len(lista)-1):
         pary(lista[i],lista[i+1])
-    for i in wyniki:
-        add_to_lista_dif(i.number)
-    lista_dif=list(dict.fromkeys(lista_dif))
     for j in lista:
-        print(j.number)
-        if j.number not in lista_dif:
-            wyniki.append(j)
-    print(lista_dif)
-    wyswietl(wyniki)
-    lista_dif.clear()
+        for i in j:
+            if i.use==False:
+                l_end.append(i)
+    # l_end = list(dict.fromkeys(l_end))
+
 
 def Next_loop():
-    global wyniki, zmiana, lista_dif
+    global wyniki,l_end, zmiana
     lista = wyniki
     wyniki=[]
     lista = podzial_zal_num_bit(lista)
@@ -97,14 +78,25 @@ def Next_loop():
         pary(lista[i], lista[i + 1])
     if (len(wyniki)==0):
         zmiana=False
-    wyswietl(wyniki)
-    for i in wyniki:
-        add_to_lista_dif(i.number)
-    lista_dif = list(dict.fromkeys(lista_dif))
-    print(lista_dif)
-    lista_dif.clear()
+    # wyswietl(wyniki)
+    for j in lista:
+        for i in j:
+            if i.use==False:
+                l_end.append(i)
+def kombinacje():
+    mac = {}#np.arange(len(l_end)*len(lista_good)).reshape(len(l_end),len(lista_good))
+    # mac = dict.fromkeys(lista_good)
+    # for i in l_end:
+    #     for j in i.number:
+    #         if j in mac.keys():
+    #             mac[j].
+    # print(mac)
 def Algo():
+    global l_end
     First_loop()
     while(zmiana):
         Next_loop()
+    l_end = list(dict.fromkeys(l_end))
+    wyswietl(l_end)
+    kombinacje()
 Algo()
