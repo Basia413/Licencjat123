@@ -1,15 +1,15 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QPushButton, QSpinBox, QFormLayout, QLineEdit, \
-    QHBoxLayout, QRadioButton, QGridLayout, QCheckBox, QStackedWidget, QListWidget
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 import zmienne
 import algorytm
 
-N = zmienne.N
+# N = zmienne.N
 
 
-class App(QWidget):
+class App(QMainWindow):
 
     def __init__(self):
         super().__init__()
@@ -22,38 +22,53 @@ class App(QWidget):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.flag = False
-        # self.llist = QListWidget()
-        # self.uklad11 = QWidget()
-        # self.uklad22 =QWidget()
-        # self.Stack = QStackedWidget(self)
-        # self.Stack.addWidget(self.uklad11)
-        # self.Stack.addWidget(self.uklad22)
+        self.flag2 = False
+        #Layout
+        self.Stack = QStackedWidget()
+        self.uklad = QWidget()
+        self.uklad.setLayout(self.uklad1())
+        self.Stack.addWidget(self.uklad)
+        self.setCentralWidget(self.Stack)
+        # self.Stack.addWidget(selfuklad2())
+        # self.Stack.setCurrentIndex(1)
+        # self.Stack.setLayout(self.uklad1())
+        # # self.setLayout(self.Stack)
+        # self.c_widget = QWidget()
+        # self.c_widget.addWidget(self.Stack)
+        # self.setCentralWidget(self.c_widget)
         # self.Stack.setCurrentIndex(0)
-        self.show()
+        # self.setLayout(self.uklad)
+        # self.show()
         #self.initUI()
+        # self.Stack.show()
 
-    def pokarz(self, i):
-        self.Stack.setCurrentIndex(i)
+
     # def initUI(self):
     #     self.setWindowTitle(self.title)
     #     self.setGeometry(self.left, self.top, self.width, self.height)
 
     def uklad1(self):
         uklad = QFormLayout()
-        napis = QLabel("Podaj liczbe bitow wejsciowych", self)
+        self.napis = QLabel("Podaj liczbe bitow wejsciowych", self)
         self.Pb = QPushButton("Dalej")
         self.Sb = QSpinBox()
-        self.Sb.setRange(1, 20)
-        uklad.addWidget(napis)
+        self.Sb.setRange(1, 12)
+        uklad.addWidget(self.napis)
         uklad.addWidget(self.Sb)
         uklad.addWidget(self.Pb)
         self.Pb.clicked.connect(self.btn1_cliked)
-        self.uklad11.setLayout(uklad)
-    def btn1_cliked(self):
-        global N
-        N = self.Sb.value()
-        self.pokarz(1)
+        return uklad
 
+    def btn1_cliked(self):
+        zmienne.N = self.Sb.value()
+        print(zmienne.N)
+        print(self.flag2)
+        if self.flag2:
+            pass
+        uklad = QWidget()
+        uklad.setLayout(self.uklad2())
+        self.Stack.addWidget(uklad)
+        self.Stack.setCurrentIndex(1)
 
 
     def uklad2(self):
@@ -64,9 +79,11 @@ class App(QWidget):
         uklad.addLayout(self.menu())
         self.good.clicked.connect(lambda: self.flag_true())
         self.inddif.clicked.connect(lambda: self.flag_false())
+        self.b1.clicked.connect(lambda: self.Stack.setCurrentIndex(0))
         self.b2.clicked.connect(lambda: self.saveN())
         self.b3.clicked.connect(lambda: self.solving())
-        self.uklad22.setLayout(uklad)
+
+        return uklad
 
     def funkcja_n(self):
         u = QHBoxLayout()
@@ -93,14 +110,14 @@ class App(QWidget):
         return u2
 
     def chose_num(self):
-        global N
+        self.flag2=True
         u = QGridLayout()
         self.tab1 = []
-        for i in range(0, 2 ** N):
+        for i in range(0, 2 ** zmienne.N):
             self.tab1.append(QCheckBox(str(i)))
         j = 0
         leng = len(self.tab1)
-        rang = (2 ** N) // 3 + 1
+        rang = (2 ** zmienne.N) // 3 + 1
         for i in range(0, 3):
             for k in range(0, rang):
                 if j >= leng: break
@@ -143,7 +160,7 @@ class App(QWidget):
         label = ""
         if self.flag:
             zmienne.lista_good.clear()
-            for i in range(0, 2 ** N):
+            for i in range(0, 2 ** zmienne.N):
                 if self.tab1[i].isChecked():
                     zmienne.lista_good.append(i)
                     zmienne.lista_good = list(dict.fromkeys(zmienne.lista_good))
@@ -153,7 +170,7 @@ class App(QWidget):
             self.Le1.setText(label)
         else:
             zmienne.lista_indiffrent.clear()
-            for i in range(0, 2 ** N):
+            for i in range(0, 2 ** zmienne.N):
                 if self.tab1[i].isChecked():
                     zmienne.lista_indiffrent.append(i)
                     zmienne.lista_indiffrent = list(dict.fromkeys(zmienne.lista_indiffrent))
@@ -172,4 +189,5 @@ class App(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 ex = App()
+ex.show()
 sys.exit(app.exec_())

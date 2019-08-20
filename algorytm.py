@@ -2,16 +2,8 @@ from liczba import Liczba
 from grupy import Grupa
 import zmienne
 
-# beda globalne (osobny plik):
-# N=4
-# zmienne.lista_good=[0, 1, 4, 6, 8, 12, 14]
-# zmienne.lista_indiffrent =[5, 10, 13, 15]
-# wyniki = []
-# l_end = []
 zmiana = True
 
-
-#
 def wyswietl(number_list):
     for j in number_list:
         print(str(j) + ": " + str(j.number_binary))
@@ -70,10 +62,7 @@ def First_loop():
     lista = podzial_zal_num_bit(lista)
     for i in range(0, len(lista) - 1):
         pary(lista[i], lista[i + 1])
-    for j in lista:
-        for i in j:
-            if i.use == False:
-                zmienne.l_end.append(i)
+    not_used(lista)
     #wyswietl(zmienne.wyniki)
     # l_end = list(dict.fromkeys(l_end))
 
@@ -88,11 +77,13 @@ def Next_loop():
     if (len(zmienne.wyniki) == 0):
         zmiana = False
     wyswietl(zmienne.wyniki)
+    not_used(lista)
+
+def not_used(lista):
     for j in lista:
         for i in j:
             if i.use == False:
                 zmienne.l_end.append(i)
-
 
 def kombinacje():
     mac = {}  # np.arange(len(l_end)*len(lista_good)).reshape(len(l_end),len(lista_good))
