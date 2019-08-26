@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import zmienne
 import algorytm
+import grupy
 
 # N = zmienne.N
 
@@ -46,7 +47,7 @@ class App(QMainWindow):
     # def initUI(self):
     #     self.setWindowTitle(self.title)
     #     self.setGeometry(self.left, self.top, self.width, self.height)
-
+    #### Ukad 1
     def uklad1(self):
         uklad = QFormLayout()
         self.napis = QLabel("Podaj liczbe bitow wejsciowych", self)
@@ -63,18 +64,21 @@ class App(QMainWindow):
         zmienne.N = self.Sb.value()
         print(zmienne.N)
         print(self.flag2)
+        print("Dump: {}".format(self.Stack.dumpObjectInfo()))
         if self.flag2:
             pass
+
         uklad = QWidget()
         uklad.setLayout(self.uklad2())
         self.Stack.addWidget(uklad)
         self.Stack.setCurrentIndex(1)
 
-
+    ### Uklad 2
     def uklad2(self):
         uklad = QVBoxLayout()
         uklad.addLayout(self.funkcja_n())
         uklad.addLayout(self.radio_b())
+        print("Ukad 2", zmienne.N)
         uklad.addLayout(self.chose_num())
         uklad.addLayout(self.menu())
         self.good.clicked.connect(lambda: self.flag_true())
@@ -82,7 +86,6 @@ class App(QMainWindow):
         self.b1.clicked.connect(lambda: self.Stack.setCurrentIndex(0))
         self.b2.clicked.connect(lambda: self.saveN())
         self.b3.clicked.connect(lambda: self.solving())
-
         return uklad
 
     def funkcja_n(self):
@@ -112,12 +115,15 @@ class App(QMainWindow):
     def chose_num(self):
         self.flag2=True
         u = QGridLayout()
+        print("Chosse num", zmienne.N)
         self.tab1 = []
         for i in range(0, 2 ** zmienne.N):
             self.tab1.append(QCheckBox(str(i)))
         j = 0
         leng = len(self.tab1)
         rang = (2 ** zmienne.N) // 3 + 1
+        print(leng)
+
         for i in range(0, 3):
             for k in range(0, rang):
                 if j >= leng: break
@@ -147,7 +153,7 @@ class App(QMainWindow):
         self.radio_changed()
 
     def radio_changed(self):
-        for i in range(0, 2 ** N):
+        for i in range(0, 2 ** zmienne.N):
             self.tab1[i].setChecked(False)
             if not self.flag:
                 if i in zmienne.lista_indiffrent:
@@ -160,7 +166,7 @@ class App(QMainWindow):
         label = ""
         if self.flag:
             zmienne.lista_good.clear()
-            for i in range(0, 2 ** zmienne.N):
+            for i in range(0, 2**zmienne.N):
                 if self.tab1[i].isChecked():
                     zmienne.lista_good.append(i)
                     zmienne.lista_good = list(dict.fromkeys(zmienne.lista_good))
@@ -179,15 +185,34 @@ class App(QMainWindow):
             label = label[:len(label) - 2]
             self.Le2.setText(label)
     def solving(self):
-        print(zmienne.lista_indiffrent)
-        print(zmienne.lista_good)
-        print(zmienne.N)
-        algorytm.Algo()
+        self.lista_wynikow = algorytm.Algo()
         algorytm.wyswietl(zmienne.l_end)
+        uklad = QWidget()
+        uklad.setLayout(self.uklad3())
+        self.Stack.addWidget(uklad)
+        self.Stack.setCurrentIndex(2)
+    #### uklad 3
+    def uklad3(self):
+        uklad = QFormLayout()
+        # uklad.alignment()
+        self.l = QLabel("Hurra to tabelka wywala", self)
+        text=''
+        for j in self.lista_wynikow:
+            tym = ''
+            for k in j:
+                tym += str(k) + "\n"
+            uklad.addWidget(QLabel(tym[:len(tym)-1], self))
+        for i in zmienne.l_end:
+            text +=str(i) + "\n"
+        self.tab_print = QLabel(text[:len(text)-1],self)
+        uklad.addWidget(self.tab_print)
+        return uklad
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setStyle('windowsvista')
+print(QStyleFactory.keys())
 ex = App()
 ex.show()
 sys.exit(app.exec_())

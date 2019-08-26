@@ -19,7 +19,8 @@ class Liczba:
 
     def __hash__(self):
         return hash(self.number_binary)
-
+    def __int__(self):
+        return int(self.number)
     def used(self):
         self.use = True
 

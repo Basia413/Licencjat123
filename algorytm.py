@@ -1,6 +1,8 @@
 from liczba import Liczba
 from grupy import Grupa
+from PyQt5.QtWidgets import *
 import zmienne
+import itertools as it
 
 zmiana = True
 
@@ -65,6 +67,7 @@ def First_loop():
     not_used(lista)
     #wyswietl(zmienne.wyniki)
     # l_end = list(dict.fromkeys(l_end))
+    return zmienne.wyniki
 
 
 def Next_loop():
@@ -78,6 +81,7 @@ def Next_loop():
         zmiana = False
     wyswietl(zmienne.wyniki)
     not_used(lista)
+    return zmienne.wyniki
 
 def not_used(lista):
     for j in lista:
@@ -86,20 +90,55 @@ def not_used(lista):
                 zmienne.l_end.append(i)
 
 def kombinacje():
-    mac = {}  # np.arange(len(l_end)*len(lista_good)).reshape(len(l_end),len(lista_good))
-    # mac = dict.fromkeys(lista_good)
-    # for i in l_end:
-    #     for j in i.number:
-    #         if j in mac.keys():
-    #             mac[j].
-    # print(mac)
+    flag = True
+    i=1
+    while(flag and i<=len(zmienne.l_end)):
+        if i == 1:
+            for j in zmienne.l_end:
+                if mach([j]):
+                    flag = False
+                    zmienne.rozwiazania.append([j])
+        else:
+            combination = list(it.combinations(zmienne.l_end,i))
+            for j in combination:
+                if mach(j):
+                    flag = False
+                    zmienne.rozwiazania.append(j)
+
+        i+=1
+    print("rozwizania:")
+    for k in zmienne.rozwiazania:
+        wyswietl(k)
+
+
+def mach(comb):
+    tym_list = zmienne.lista_good.copy()
+    for i in comb:
+        if type(i.number) is int:
+            if i.number in tym_list:
+                tym_list.remove(i.number)
+        else:
+            for j in i.number:
+                if j in tym_list:
+                    tym_list.remove(j)
+    if len(tym_list)>0:
+        return False
+    else:
+        return True
+
 
 
 def Algo():
     global zmiana
-    First_loop()
+    zmienne.N = 4
+    lista_wynikow = []
+    tym =First_loop()
+    lista_wynikow.append(tym)
     while (zmiana):
-        Next_loop()
+        tym =Next_loop()
+        lista_wynikow.append(tym)
     zmienne.l_end = list(dict.fromkeys(zmienne.l_end))
     wyswietl(zmienne.l_end)
     kombinacje()
+    return lista_wynikow
+Algo()

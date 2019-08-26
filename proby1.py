@@ -25,4 +25,7 @@ t=Grupa("11_0", l[3:5])
 # k=t.number
 t=[[1,3],[2,6]]
 print(np.reshape(t, np.size(t)))
+t.remove([1,3])
+print(t)
+print(t.remove([1,3]))
 

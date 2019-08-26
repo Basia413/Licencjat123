@@ -23,14 +23,14 @@ class Grupa:
         tym = ""
         for j in self.number:
             tym += str(j) + " "
-        return tym  # + ":"+ str(self.number_binary)
+        return tym  + ":"+ str(self.number_binary)
 
     def __repr__(self):
         return self.number_binary
 
     def used(self):
         self.use = True
-
+    #do usunicia ?
     def bitstrue(self):
         suma = 0
         for i in self.number_binary:
