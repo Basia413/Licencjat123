@@ -1,11 +1,11 @@
-from liczba import Liczba
+from number import Number
 def wyswietl(number_list):
     for j in  number_list:
         print(j)
     print("##############")
-l = [Liczba(13), Liczba(15), Liczba(4), Liczba(3), Liczba(2), Liczba(7)]
+l = [Number(13), Number(15), Number(4), Number(3), Number(2), Number(7)]
 for i in l:
-    print(i.uzupelnij(4))
+    print(i.fill_with_zeros(4))
 
 wyswietl(l)
 

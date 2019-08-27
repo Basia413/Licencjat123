@@ -1,11 +1,11 @@
-from liczba import Liczba
-from grupy import Grupa
+from number import Number
+from groups import Group
 from PyQt5.QtWidgets import *
-import zmienne
+import variables
 import itertools as it
 
-zmiana = True
-
+change = True
+#Funkcja do testowania
 def wyswietl(number_list):
     for j in number_list:
         print(str(j) + ": " + str(j.number_binary))
@@ -13,15 +13,15 @@ def wyswietl(number_list):
 
 
 def dif_of_one_bit(str1, str2):
-    rozwiazanie = 0
+    result = 0
     c = -1
-    for i in range(0, zmienne.N):
+    for i in range(0, variables.N):
         if str1[i] == "-" and str2[i] != "-":
             return -1
         if (str1[i] == "1" and str2[i] == "0") or (str1[i] == "0" and str2[i] == "1"):
-            rozwiazanie += 1
+            result += 1
             c = i
-        if rozwiazanie > 1:
+        if result > 1:
             return -1
     if c >= 0:
         tym = str2[:c] + '-' + str2[c + 1:]
@@ -29,7 +29,7 @@ def dif_of_one_bit(str1, str2):
     return c
 
 
-def pary(list1, list2):
+def pairs(list1, list2):
     if len(list1) < 1 or len(list2) < 1:
         return True
     else:
@@ -39,15 +39,15 @@ def pary(list1, list2):
                 if b != -1:
                     i.used()
                     j.used()
-                    tym = Grupa(b, [i.number, j.number])
-                    zmienne.wyniki.append(tym)
+                    tym = Group(b, [i.number, j.number])
+                    variables.results.append(tym)
 
 
-def podzial_zal_num_bit(lista):
+def division_dep_am_bits(lista):
     j = 0
     M = len(lista)
     lista_list = []
-    for k in range(0, zmienne.N + 1):
+    for k in range(0, variables.N + 1):
         listat = []
         while j < M and k == lista[j].number_of_true_bits:
             listat.append(lista[j])
@@ -58,61 +58,64 @@ def podzial_zal_num_bit(lista):
 
 def First_loop():
     lista = []
-    for i in zmienne.lista_good + zmienne.lista_indiffrent:
-        lista.append(Liczba(int(i)).uzupelnij(zmienne.N))
+    list_copy = []
+    for i in variables.lista_good + variables.lista_indiffrent:
+        lista.append(Number(int(i)).fill_with_zeros(variables.N))
     lista = sorted(lista)
-    lista = podzial_zal_num_bit(lista)
+    for i in lista:
+        list_copy.append(str(i)+":"+str(i.number_binary))
+    lista = division_dep_am_bits(lista)
     for i in range(0, len(lista) - 1):
-        pary(lista[i], lista[i + 1])
+        pairs(lista[i], lista[i + 1])
     not_used(lista)
-    #wyswietl(zmienne.wyniki)
+    wyswietl(variables.results)
     # l_end = list(dict.fromkeys(l_end))
-    return zmienne.wyniki
+    return list_copy, variables.results
 
 
 def Next_loop():
-    global zmiana
-    lista = zmienne.wyniki
-    zmienne.wyniki = []
-    lista = podzial_zal_num_bit(lista)
+    global change
+    lista = variables.results
+    variables.results = []
+    lista = division_dep_am_bits(lista)
     for i in range(0, len(lista) - 1):
-        pary(lista[i], lista[i + 1])
-    if (len(zmienne.wyniki) == 0):
-        zmiana = False
-    wyswietl(zmienne.wyniki)
+        pairs(lista[i], lista[i + 1])
+    if (len(variables.results) == 0):
+        change = False
+    wyswietl(variables.results)
     not_used(lista)
-    return zmienne.wyniki
+    return variables.results
 
 def not_used(lista):
     for j in lista:
         for i in j:
             if i.use == False:
-                zmienne.l_end.append(i)
+                variables.l_end.append(i)
 
-def kombinacje():
+def result_combination():
     flag = True
     i=1
-    while(flag and i<=len(zmienne.l_end)):
+    while(flag and i<=len(variables.l_end)):
         if i == 1:
-            for j in zmienne.l_end:
+            for j in variables.l_end:
                 if mach([j]):
                     flag = False
-                    zmienne.rozwiazania.append([j])
+                    variables.solutions.append([j])
         else:
-            combination = list(it.combinations(zmienne.l_end,i))
+            combination = list(it.combinations(variables.l_end, i))
             for j in combination:
                 if mach(j):
                     flag = False
-                    zmienne.rozwiazania.append(j)
+                    variables.solutions.append(j)
 
         i+=1
     print("rozwizania:")
-    for k in zmienne.rozwiazania:
+    for k in variables.solutions:
         wyswietl(k)
 
 
 def mach(comb):
-    tym_list = zmienne.lista_good.copy()
+    tym_list = variables.lista_good.copy()
     for i in comb:
         if type(i.number) is int:
             if i.number in tym_list:
@@ -129,16 +132,16 @@ def mach(comb):
 
 
 def Algo():
-    global zmiana
-    zmienne.N = 4
-    lista_wynikow = []
-    tym =First_loop()
-    lista_wynikow.append(tym)
-    while (zmiana):
+    global change
+    list_of_results = []
+    tym1,tym2 =First_loop()
+    list_of_results.append(tym1)
+    list_of_results.append(tym2)
+    while (change):
         tym =Next_loop()
-        lista_wynikow.append(tym)
-    zmienne.l_end = list(dict.fromkeys(zmienne.l_end))
-    wyswietl(zmienne.l_end)
-    kombinacje()
-    return lista_wynikow
+        list_of_results.append(tym)
+    variables.l_end = list(dict.fromkeys(variables.l_end))
+    wyswietl(variables.l_end)
+    result_combination()
+    return list_of_results
 Algo()

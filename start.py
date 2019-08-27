@@ -3,9 +3,9 @@
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-import zmienne
-import algorytm
-import grupy
+import variables
+import algorithm
+import groups
 
 # N = zmienne.N
 
@@ -26,29 +26,12 @@ class App(QMainWindow):
         self.flag2 = False
         #Layout
         self.Stack = QStackedWidget()
-        self.uklad = QWidget()
-        self.uklad.setLayout(self.uklad1())
-        self.Stack.addWidget(self.uklad)
+        self.arrangement = QWidget()
+        self.arrangement.setLayout(self.arragement1())
+        self.Stack.addWidget(self.arrangement)
         self.setCentralWidget(self.Stack)
-        # self.Stack.addWidget(selfuklad2())
-        # self.Stack.setCurrentIndex(1)
-        # self.Stack.setLayout(self.uklad1())
-        # # self.setLayout(self.Stack)
-        # self.c_widget = QWidget()
-        # self.c_widget.addWidget(self.Stack)
-        # self.setCentralWidget(self.c_widget)
-        # self.Stack.setCurrentIndex(0)
-        # self.setLayout(self.uklad)
-        # self.show()
-        #self.initUI()
-        # self.Stack.show()
-
-
-    # def initUI(self):
-    #     self.setWindowTitle(self.title)
-    #     self.setGeometry(self.left, self.top, self.width, self.height)
-    #### Ukad 1
-    def uklad1(self):
+    #### Uklad 1
+    def arragement1(self):
         uklad = QFormLayout()
         self.napis = QLabel("Podaj liczbe bitow wejsciowych", self)
         self.Pb = QPushButton("Dalej")
@@ -61,34 +44,39 @@ class App(QMainWindow):
         return uklad
 
     def btn1_cliked(self):
-        zmienne.N = self.Sb.value()
-        print(zmienne.N)
+        variables.N = self.Sb.value()
+        print(variables.N)
         print(self.flag2)
         print("Dump: {}".format(self.Stack.dumpObjectInfo()))
         if self.flag2:
             pass
 
         uklad = QWidget()
-        uklad.setLayout(self.uklad2())
+        uklad.setLayout(self.arragement2())
         self.Stack.addWidget(uklad)
         self.Stack.setCurrentIndex(1)
 
     ### Uklad 2
-    def uklad2(self):
-        uklad = QVBoxLayout()
-        uklad.addLayout(self.funkcja_n())
-        uklad.addLayout(self.radio_b())
-        print("Ukad 2", zmienne.N)
-        uklad.addLayout(self.chose_num())
-        uklad.addLayout(self.menu())
+    def arragement2(self):
+        arraggement= QVBoxLayout()
+        arraggement.addLayout(self.funcion_n())
+        arraggement.addLayout(self.radio_b())
+
+        # Sa = QScrollArea()
+        # Sa.setVerticalScrollBar()
+        # Sa.setFrameShape(QFrame.NoFrame)
+        arraggement.addLayout(self.chose_num())
+        #arraggement.addWidget(self.chose_num())
+        arraggement.addLayout(self.menu())
+
         self.good.clicked.connect(lambda: self.flag_true())
         self.inddif.clicked.connect(lambda: self.flag_false())
-        self.b1.clicked.connect(lambda: self.Stack.setCurrentIndex(0))
+        #self.b1.clicked.connect(lambda: self.Stack.setCurrentIndex(0))
         self.b2.clicked.connect(lambda: self.saveN())
         self.b3.clicked.connect(lambda: self.solving())
-        return uklad
+        return arraggement
 
-    def funkcja_n(self):
+    def funcion_n(self):
         u = QHBoxLayout()
         nap1 = QLabel("f( x,y,z) = sum(", self)
         nap2 = QLabel(") + sum_n(")
@@ -115,13 +103,13 @@ class App(QMainWindow):
     def chose_num(self):
         self.flag2=True
         u = QGridLayout()
-        print("Chosse num", zmienne.N)
+        print("Chosse num", variables.N)
         self.tab1 = []
-        for i in range(0, 2 ** zmienne.N):
+        for i in range(0, 2 ** variables.N):
             self.tab1.append(QCheckBox(str(i)))
         j = 0
         leng = len(self.tab1)
-        rang = (2 ** zmienne.N) // 3 + 1
+        rang = (2 ** variables.N) // 3 + 1
         print(leng)
 
         for i in range(0, 3):
@@ -133,14 +121,13 @@ class App(QMainWindow):
 
     def menu(self):
         u = QHBoxLayout()
-        self.b1 = QPushButton("Cofnij")
+        #self.b1 = QPushButton("Cofnij")
         self.b2 = QPushButton("Zapisz")
         self.b3 = QPushButton("Rozwiaz")
-        u.addWidget(self.b1)
+        #u.addWidget(self.b1)
         u.addWidget(self.b2)
         u.addWidget(self.b3)
         return u
-
 
     def flag_true(self):
         # self.saveN()
@@ -153,61 +140,84 @@ class App(QMainWindow):
         self.radio_changed()
 
     def radio_changed(self):
-        for i in range(0, 2 ** zmienne.N):
+        for i in range(0, 2 ** variables.N):
             self.tab1[i].setChecked(False)
             if not self.flag:
-                if i in zmienne.lista_indiffrent:
+                if i in variables.lista_indiffrent:
                     self.tab1[i].setChecked(True)
             else:
-                if i in zmienne.lista_good:
+                if i in variables.lista_good:
                     self.tab1[i].setChecked(True)
 
     def saveN(self):
         label = ""
         if self.flag:
-            zmienne.lista_good.clear()
-            for i in range(0, 2**zmienne.N):
+            variables.lista_good.clear()
+            for i in range(0, 2 ** variables.N):
                 if self.tab1[i].isChecked():
-                    zmienne.lista_good.append(i)
-                    zmienne.lista_good = list(dict.fromkeys(zmienne.lista_good))
-            for i in zmienne.lista_good:
+                    variables.lista_good.append(i)
+                    variables.lista_good = list(dict.fromkeys(variables.lista_good))
+            for i in variables.lista_good:
                 label += str(i) + ", "
             label = label[:len(label) - 2]
             self.Le1.setText(label)
         else:
-            zmienne.lista_indiffrent.clear()
-            for i in range(0, 2 ** zmienne.N):
+            variables.lista_indiffrent.clear()
+            for i in range(0, 2 ** variables.N):
                 if self.tab1[i].isChecked():
-                    zmienne.lista_indiffrent.append(i)
-                    zmienne.lista_indiffrent = list(dict.fromkeys(zmienne.lista_indiffrent))
-            for i in zmienne.lista_indiffrent:
+                    variables.lista_indiffrent.append(i)
+                    variables.lista_indiffrent = list(dict.fromkeys(variables.lista_indiffrent))
+            for i in variables.lista_indiffrent:
                 label += str(i) + ", "
             label = label[:len(label) - 2]
             self.Le2.setText(label)
+
     def solving(self):
-        self.lista_wynikow = algorytm.Algo()
-        algorytm.wyswietl(zmienne.l_end)
+        self.lista_wynikow = algorithm.Algo()
+        algorithm.wyswietl(variables.l_end)
         uklad = QWidget()
         uklad.setLayout(self.uklad3())
         self.Stack.addWidget(uklad)
         self.Stack.setCurrentIndex(2)
-    #### uklad 3
+
+    #### Uklad 3
     def uklad3(self):
-        uklad = QFormLayout()
-        # uklad.alignment()
-        self.l = QLabel("Hurra to tabelka wywala", self)
-        text=''
+        u = QVBoxLayout()
+        self.l = QLabel("Tabele:", self)
+        u.addWidget(self.l)
+        u.addLayout(self.tables())
+        u.addLayout(self.solution())
+        self.bt = QPushButton("Zakoncz")
+        u.addWidget(self.bt)
+        self.bt.clicked.connect(lambda: sys.exit())
+        return u
+
+    def tables(self):
+        uklad = QHBoxLayout()
+        text = ''
         for j in self.lista_wynikow:
             tym = ''
-            for k in j:
-                tym += str(k) + "\n"
-            uklad.addWidget(QLabel(tym[:len(tym)-1], self))
-        for i in zmienne.l_end:
-            text +=str(i) + "\n"
-        self.tab_print = QLabel(text[:len(text)-1],self)
+            if len(j) > 0:
+                for k in j:
+                    tym += str(k) + "\n----------\n"
+                tab1 = QLabel(tym[:len(tym) - 1], self)  # ,c,r)
+                tab1.setAlignment(Qt.AlignTop)
+                uklad.addWidget(tab1)
+        for i in variables.l_end:
+            text += str(i) + "\n----------\n "
+        self.tab_print = QLabel(text[:len(text) - 1], self)
+        self.tab_print.setAlignment(Qt.AlignTop)
         uklad.addWidget(self.tab_print)
         return uklad
 
+    def solution(self):
+        uklad =QFormLayout()
+        tym=""
+        for i in variables.solutions:
+            tym += str(i) + "\n----------\n"
+        text = QLabel(tym)
+        uklad.addWidget(text)
+        return uklad
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

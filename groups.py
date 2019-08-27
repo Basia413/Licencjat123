@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class Grupa:
+class Group:
     def __init__(self, strin, lis, use=False):
         self.number_binary = strin
         self.number = np.reshape(lis, np.size(lis))
@@ -27,7 +27,12 @@ class Grupa:
 
     def __repr__(self):
         return self.number_binary
-
+    def __len__(self):
+        i=0
+        for j in self.number_binary:
+            if j=="0" or j=="1":
+                i+=1
+        return i
     def used(self):
         self.use = True
     #do usunicia ?

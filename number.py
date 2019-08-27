@@ -1,4 +1,4 @@
-class Liczba:
+class Number:
     def __init__(self, number=0, use=False):
         self.number = number
         self.number_binary = bin(number)[2:]
@@ -24,14 +24,14 @@ class Liczba:
     def used(self):
         self.use = True
 
-    def uzupelnij(self, long):
+    def fill_with_zeros(self, long):
         for i in range(len(self.number_binary), long):
             self.number_binary = "0" + self.number_binary
         return self
 
     def bitstrue(self):
-        suma = 0
+        sum = 0
         for i in self.number_binary:
             if i == "1":
-                suma += 1
-        return suma
+                sum += 1
+        return sum
