@@ -229,7 +229,7 @@ class App(QMainWindow):
             for j in i:
                 tym += self.char_group(j.number_binary) + " + "
             else:
-                if variables.N != 1:
+                if len(i)==1 and  len(i[0])==0:
                     tym = tym[:len(tym) - 3]
                     tym += str(1) + "   "
             tym = tym[:len(tym) - 3] + "\n\n"
