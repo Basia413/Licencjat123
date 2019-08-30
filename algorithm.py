@@ -1,14 +1,16 @@
-from number import Number
-from groups import Group
-from PyQt5.QtWidgets import *
-import variables
 import itertools as it
 
+import variables
+from groups import Group
+from number import Number
+
 change = True
-#Funkcja do testowania
+
+
+# Funkcja do testowania
 def wyswietl(number_list):
     for j in number_list:
-        print(str(j) + ": " + str(j.number_binary))
+        print(str(j))
     print("##############")
 
 
@@ -63,13 +65,11 @@ def First_loop():
         lista.append(Number(int(i)).fill_with_zeros(variables.N))
     lista = sorted(lista)
     for i in lista:
-        list_copy.append(str(i)+":"+str(i.number_binary))
+        list_copy.append(str(i))
     lista = division_dep_am_bits(lista)
     for i in range(0, len(lista) - 1):
         pairs(lista[i], lista[i + 1])
     not_used(lista)
-    wyswietl(variables.results)
-    # l_end = list(dict.fromkeys(l_end))
     return list_copy, variables.results
 
 
@@ -80,22 +80,23 @@ def Next_loop():
     lista = division_dep_am_bits(lista)
     for i in range(0, len(lista) - 1):
         pairs(lista[i], lista[i + 1])
-    if (len(variables.results) == 0):
+    if len(variables.results) == 0:
         change = False
-    wyswietl(variables.results)
     not_used(lista)
     return variables.results
+
 
 def not_used(lista):
     for j in lista:
         for i in j:
-            if i.use == False:
+            if not i.use:
                 variables.l_end.append(i)
+
 
 def result_combination():
     flag = True
-    i=1
-    while(flag and i<=len(variables.l_end)):
+    i = 1
+    while flag and i <= len(variables.l_end):
         if i == 1:
             for j in variables.l_end:
                 if mach([j]):
@@ -108,10 +109,22 @@ def result_combination():
                     flag = False
                     variables.solutions.append(j)
 
-        i+=1
-    print("rozwizania:")
-    for k in variables.solutions:
-        wyswietl(k)
+        i += 1
+    if len(variables.solutions) > 1:
+        min_el = len(variables.solutions[0][0])
+        flag_comb = False
+        temp_list = []
+        for k in variables.solutions:
+            for j in k:
+                if len(j) < min_el:
+                    min_el = len(j)
+                    flag_comb = True
+            if flag_comb:
+                temp_list.append(k)
+                flag_comb = False
+        if len(temp_list) > 0:
+            variables.solutions = temp_list.copy()
+        variables.solutions = list(dict.fromkeys(variables.solutions))
 
 
 def mach(comb):
@@ -124,24 +137,23 @@ def mach(comb):
             for j in i.number:
                 if j in tym_list:
                     tym_list.remove(j)
-    if len(tym_list)>0:
+    if len(tym_list) > 0:
         return False
     else:
         return True
 
 
-
 def Algo():
     global change
     list_of_results = []
-    tym1,tym2 =First_loop()
+    tym1, tym2 = First_loop()
     list_of_results.append(tym1)
     list_of_results.append(tym2)
-    while (change):
-        tym =Next_loop()
+    while change:
+        tym = Next_loop()
         list_of_results.append(tym)
     variables.l_end = list(dict.fromkeys(variables.l_end))
-    wyswietl(variables.l_end)
+    # wyswietl(variables.l_end)
     result_combination()
     return list_of_results
-Algo()
+# Algo()

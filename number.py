@@ -12,15 +12,24 @@ class Number:
         return self.number_of_true_bits < other.number_of_true_bits
 
     def __str__(self):
-        return str(self.number)
+        return str(self.number) + " : " + self.number_binary
 
     def wyswietl(self):
         print(str(self.number) + " (" + self.number_binary + ")" + "-> " + str(self.number_of_true_bits))
 
     def __hash__(self):
         return hash(self.number_binary)
+
+    def __len__(self):
+        i = 0
+        for j in self.number_binary:
+            if j == "0" or j == "1":
+                i += 1
+        return i
+
     def __int__(self):
         return int(self.number)
+
     def used(self):
         self.use = True
 
@@ -30,8 +39,8 @@ class Number:
         return self
 
     def bitstrue(self):
-        sum = 0
+        sum1 = 0
         for i in self.number_binary:
             if i == "1":
-                sum += 1
-        return sum
+                sum1 += 1
+        return sum1

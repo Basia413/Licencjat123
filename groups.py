@@ -11,10 +11,6 @@ class Group:
     def __eq__(self, other):
         return self.number_binary == other.number_binary
 
-    def __add__(self, other):
-        for i in other.number:
-            self.number.append(i)
-        return self
 
     def __hash__(self):
         return hash(self.number_binary)
@@ -23,19 +19,22 @@ class Group:
         tym = ""
         for j in self.number:
             tym += str(j) + " "
-        return tym  + ":"+ str(self.number_binary)
+        return tym + ":" + str(self.number_binary)
 
     def __repr__(self):
         return self.number_binary
+
     def __len__(self):
-        i=0
+        i = 0
         for j in self.number_binary:
-            if j=="0" or j=="1":
-                i+=1
+            if j == "0" or j == "1":
+                i += 1
         return i
+
     def used(self):
         self.use = True
-    #do usunicia ?
+
+    # do usunicia ?
     def bitstrue(self):
         suma = 0
         for i in self.number_binary:

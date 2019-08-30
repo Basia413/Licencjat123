@@ -5,9 +5,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import variables
 import algorithm
-import groups
-
-# N = zmienne.N
 
 
 class App(QMainWindow):
@@ -23,17 +20,23 @@ class App(QMainWindow):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.flag = False
-        self.flag2 = False
-        #Layout
+        self.str_variables = ""
+        # Layout
         self.Stack = QStackedWidget()
         self.arrangement = QWidget()
         self.arrangement.setLayout(self.arragement1())
         self.Stack.addWidget(self.arrangement)
         self.setCentralWidget(self.Stack)
+
+    def print_variables(self):
+        for i in range(97, 97 + variables.N):
+            self.str_variables += chr(i) + ", "
+        self.str_variables = self.str_variables[:len(self.str_variables) - 2]
+
     #### Uklad 1
     def arragement1(self):
         uklad = QFormLayout()
-        self.napis = QLabel("Podaj liczbe bitow wejsciowych", self)
+        self.napis = QLabel("Podaj liczbę bitów wejściowych: ", self)
         self.Pb = QPushButton("Dalej")
         self.Sb = QSpinBox()
         self.Sb.setRange(1, 12)
@@ -45,12 +48,7 @@ class App(QMainWindow):
 
     def btn1_cliked(self):
         variables.N = self.Sb.value()
-        print(variables.N)
-        print(self.flag2)
-        print("Dump: {}".format(self.Stack.dumpObjectInfo()))
-        if self.flag2:
-            pass
-
+        self.print_variables()
         uklad = QWidget()
         uklad.setLayout(self.arragement2())
         self.Stack.addWidget(uklad)
@@ -58,31 +56,30 @@ class App(QMainWindow):
 
     ### Uklad 2
     def arragement2(self):
-        arraggement= QVBoxLayout()
+        arraggement = QVBoxLayout()
         arraggement.addLayout(self.funcion_n())
         arraggement.addLayout(self.radio_b())
 
-        # Sa = QScrollArea()
-        # Sa.setVerticalScrollBar()
-        # Sa.setFrameShape(QFrame.NoFrame)
-        arraggement.addLayout(self.chose_num())
-        #arraggement.addWidget(self.chose_num())
+        Sa = QScrollArea()
+        Sa.setWidget(self.chose_num())
+        Sa.setWidgetResizable(True)
+        Sa.setFixedHeight(400)
+        arraggement.addWidget(Sa)
         arraggement.addLayout(self.menu())
 
         self.good.clicked.connect(lambda: self.flag_true())
         self.inddif.clicked.connect(lambda: self.flag_false())
-        #self.b1.clicked.connect(lambda: self.Stack.setCurrentIndex(0))
         self.b2.clicked.connect(lambda: self.saveN())
         self.b3.clicked.connect(lambda: self.solving())
         return arraggement
 
     def funcion_n(self):
         u = QHBoxLayout()
-        nap1 = QLabel("f( x,y,z) = sum(", self)
-        nap2 = QLabel(") + sum_n(")
+        nap1 = QLabel("f(" + self.str_variables + ") =∑(", self)
+        nap2 = QLabel(") + ∑n(")
         nap3 = QLabel(")")
-        self.Le1 = QLineEdit()
-        self.Le2 = QLineEdit()
+        self.Le1 = QLabel()
+        self.Le2 = QLabel()
         u.addWidget(nap1)
         u.addWidget(self.Le1)
         u.addWidget(nap2)
@@ -91,40 +88,41 @@ class App(QMainWindow):
         return u
 
     def radio_b(self):
+        self.lb3 = QLabel("Wybierz opcje: ")
         self.good = QRadioButton("Pozytywne")
-        self.inddif = QRadioButton("Obojetne")
+        self.inddif = QRadioButton("Obojętne")
         u2 = QHBoxLayout()
         u2.addStretch()
+        u2.addWidget(self.lb3)
         u2.addWidget(self.good)
         u2.addWidget(self.inddif)
         u2.addStretch()
         return u2
 
     def chose_num(self):
-        self.flag2=True
+        Gb = QGroupBox("Wybierz liczby (Przed zmianą opcji naciśnij zapisz)")
         u = QGridLayout()
-        print("Chosse num", variables.N)
         self.tab1 = []
         for i in range(0, 2 ** variables.N):
             self.tab1.append(QCheckBox(str(i)))
         j = 0
         leng = len(self.tab1)
         rang = (2 ** variables.N) // 3 + 1
-        print(leng)
 
         for i in range(0, 3):
             for k in range(0, rang):
                 if j >= leng: break
                 u.addWidget(self.tab1[j], k, i)
                 j += 1
-        return u
+        Gb.setLayout(u)
+        return Gb
 
     def menu(self):
         u = QHBoxLayout()
-        #self.b1 = QPushButton("Cofnij")
+        # self.b1 = QPushButton("Cofnij")
         self.b2 = QPushButton("Zapisz")
-        self.b3 = QPushButton("Rozwiaz")
-        #u.addWidget(self.b1)
+        self.b3 = QPushButton("Rozwiąż")
+        # u.addWidget(self.b1)
         u.addWidget(self.b2)
         u.addWidget(self.b3)
         return u
@@ -173,21 +171,30 @@ class App(QMainWindow):
             self.Le2.setText(label)
 
     def solving(self):
-        self.lista_wynikow = algorithm.Algo()
-        algorithm.wyswietl(variables.l_end)
         uklad = QWidget()
-        uklad.setLayout(self.uklad3())
+        try:
+            self.lista_wynikow = algorithm.Algo()
+
+        except:
+            pass
+        uklad.setLayout(self.arragment3())
         self.Stack.addWidget(uklad)
         self.Stack.setCurrentIndex(2)
 
     #### Uklad 3
-    def uklad3(self):
+    def arragment3(self):
         u = QVBoxLayout()
-        self.l = QLabel("Tabele:", self)
-        u.addWidget(self.l)
-        u.addLayout(self.tables())
+        self.l1 = QLabel("Tabele:", self)
+        self.l2 = QLabel("Rozwiązanie: ")
+        u.addWidget(self.l1)
+        Sa = QScrollArea()
+        Sa.setWidget(self.tables())
+        Sa.setWidgetResizable(True)
+        Sa.setFixedHeight(400)
+        u.addWidget(Sa)
+        u.addWidget(self.l2)
         u.addLayout(self.solution())
-        self.bt = QPushButton("Zakoncz")
+        self.bt = QPushButton("Zakończ")
         u.addWidget(self.bt)
         self.bt.clicked.connect(lambda: sys.exit())
         return u
@@ -199,30 +206,63 @@ class App(QMainWindow):
             tym = ''
             if len(j) > 0:
                 for k in j:
-                    tym += str(k) + "\n----------\n"
+                    tym += str(k) + "\n------------\n"
                 tab1 = QLabel(tym[:len(tym) - 1], self)  # ,c,r)
-                tab1.setAlignment(Qt.AlignTop)
+                tab1.setAlignment(Qt.AlignRight)
                 uklad.addWidget(tab1)
+                uklad.addStretch(20)
         for i in variables.l_end:
-            text += str(i) + "\n----------\n "
+            text += str(i) + "\n------------\n "
         self.tab_print = QLabel(text[:len(text) - 1], self)
-        self.tab_print.setAlignment(Qt.AlignTop)
+        self.tab_print.setAlignment(Qt.AlignRight)
         uklad.addWidget(self.tab_print)
-        return uklad
+        uklad.addStretch(20)
+        Gb = QGroupBox()
+        Gb.setLayout(uklad)
+        return Gb
 
     def solution(self):
-        uklad =QFormLayout()
-        tym=""
+        uklad = QFormLayout()
+        tym = ""
         for i in variables.solutions:
-            tym += str(i) + "\n----------\n"
+            tym += "f(" + self.str_variables + ")= "
+            for j in i:
+                tym += self.char_group(j.number_binary) + " + "
+            else:
+                if variables.N != 1:
+                    tym = tym[:len(tym) - 3]
+                    tym += str(1) + "   "
+            tym = tym[:len(tym) - 3] + "\n\n"
         text = QLabel(tym)
         uklad.addWidget(text)
         return uklad
 
+    def char_group(self, str1):
+        text = ""
+        character = 97
+        for i in range(0, variables.N):
+            if str1[i] == "-":
+                pass
+            elif str1[i] == "1":
+                text += chr(character)
+            elif str1[i] == "0":
+                text += "~" + chr(character)
+            character += 1
+        return text
+
+    def arragment3_err(self):
+        u = QFormLayout()
+        self.l1e = QLabel("Nie Wprowadziłeś żadnej wartości!")
+        self.bt2 = QPushButton("Zakoncz")
+        u.addWidget(self.l1e)
+        u.addWidget(self.bt2)
+        self.bt2.clicked.connect(lambda: sys.exit())
+        return u
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyle('windowsvista')
-print(QStyleFactory.keys())
 ex = App()
 ex.show()
 sys.exit(app.exec_())
